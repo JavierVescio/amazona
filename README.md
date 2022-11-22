@@ -22,6 +22,10 @@
    c. use state hook
    d. use effect hook
    e. use reducer hook
+9. Manage State By Reducer Hook
+   a. define reducer
+   b. update fetch data
+   c. get state from useReducer
 
 # Notes
 
@@ -93,3 +97,75 @@
     fetchData();
   }, [])
 ```
+
+## Lesson 11
+
+- We're going to replace useState with useReducer to manage complex states in the HomeScreen component. We're going to use reducer and record all changes in the state of UI. So, when there's a change in the state (for example, after getting data from the backend), the new state will show all changes in the state.
+- Let's define a reducer function (it should be placed between the imports and the functional component). It accepts two parameters. The first one is current state and the second one is the action that change the state and create a new state.
+
+```
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'FETCH_REQUEST':
+        return { ...state, loading: true };
+      case 'FETCH_SUCCESS':
+        return { ...state, products: action.payload, loading: false };
+      case 'FETCH_FAIL':
+        return { ...state, loading: false, error: action.payload };
+      default:
+        return state;
+    }
+  }
+```
+
+- Inside the functional component, we replace the useState with this:
+
+```
+  const [{ loading, error, products }, dispatch] = useReducer(reducer, {
+    products: [],
+    loading: true,
+    error: ''
+  });
+```
+
+- And the useEffect should look like this:
+
+```
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: 'FETCH_REQUEST' })
+      try {
+        const result = await axios.get('/api/products');
+        dispatch({ type: 'FETCH_SUCCESS', payload: result.data })
+      } catch (err) {
+        dispatch({ type: 'FETCH_FAIL', payload: err.message })
+      }
+    }
+    fetchData();
+  }, [])
+```
+
+- Then we can return something like this:
+
+```
+  loading ? (
+    <div>Loading...</div>
+  ) : error ? (
+    <div>{error}</div>
+  ) : (
+    products.map(product => (
+```
+
+- Para ver los cambios de estado en la consola, se recomienda instalar "npm i use-reducer-logger ‒force". Luego de instalado, cambiar la parte del useReducer, agregando un logger al reducer:
+
+```
+  const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
+    products: [],
+    loading: true,
+    error: ''
+  });
+```
+
+- Luego basta con ejecutar la app, ver la consola y se apreciarán los cambios de estado.
+  ![](https://remnote-user-data.s3.amazonaws.com/8hcdy2P0YlqJ9kPBFeiId1NIaNJDlS4tVdXzZqezt5ozoSlMUihVrJu_uwqODZEu4540RjAAeLWtD2PgW5jdSyYN7y-YFAvK56cROwd-pO3b0BWpzX7dwZe_y7Rxgg0j.png)
+- Se recomienda ir a network y cambiar "No throttling" por "Slow 3G", así se aprecian los cambios de estado en la propia página web (sin necesidad de ver los logs en la consola).
