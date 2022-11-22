@@ -16,6 +16,12 @@
    b. create route for home screen
    c. create route for product screen
 7. Create Node.JS server
+8. Fetch products from backend
+   a. set proxy in package.json
+   b. npm i axios
+   c. use state hook
+   d. use effect hook
+   e. use reducer hook
 
 # Notes
 
@@ -52,22 +58,38 @@
 - Crear un archivo llamado server.js y poner el siguiente código:
 
 ```
-import express from 'express';
-import data from './data.js';
+  import express from 'express';
+  import data from './data.js';
 
-const app = express();
+  const app = express();
 
-app.get('/api/products', (req, res) => {
-  res.send(data.products);
-});
+  app.get('/api/products', (req, res) => {
+    res.send(data.products);
+  });
 
-const port = process.env.PORT || 5000;
+  const port = process.env.PORT || 5000;
 
-app.listen(port, () => {
-  console.log(`Serve at http://localhost:${port}`);
-});
+  app.listen(port, () => {
+    console.log(`Serve at http://localhost:${port}`);
+  });
 ```
 
 - Instalar extensión JSON viewer en el navegador web para ver mejor los json.
 - Instalar nodemon para actualizaciones de cambios en vivo del server.
   Usar ǹpm i nodemon --save-dev. Ponemos el save-dev para que el paquete no se instale en producción. Luego ir a package.json y en scripts agregar "start": "nodemon server.js". Para ejecutar el server, hacer ǹpm start en vez de node server.js.
+
+## Lesson 10
+
+- In the frontend, go to package.json and add a proxy right after the name: "proxy":"http://localhost:5000". With this, we can have access to fetch data from the backend.
+- It's time to define a state to save the data (the products) from the backend. In HomeScreen component we can write something like this:
+
+```
+  const [products, setProducts] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get('/api/products');
+      setProducts(result.data);
+    }
+    fetchData();
+  }, [])
+```
