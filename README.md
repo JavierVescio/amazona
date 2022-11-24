@@ -26,6 +26,8 @@
    a. define reducer
    b. update fetch data
    c. get state from useReducer
+10. Install React Bootstrap.
+11. Create Product and Rating Component
 
 # Notes
 
