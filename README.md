@@ -28,6 +28,7 @@
    c. get state from useReducer
 10. Install React Bootstrap.
 11. Create Product and Rating Component
+12. Add Product Screen
 
 # Notes
 
@@ -171,3 +172,35 @@
 - Luego basta con ejecutar la app, ver la consola y se apreciarán los cambios de estado.
   ![](https://remnote-user-data.s3.amazonaws.com/8hcdy2P0YlqJ9kPBFeiId1NIaNJDlS4tVdXzZqezt5ozoSlMUihVrJu_uwqODZEu4540RjAAeLWtD2PgW5jdSyYN7y-YFAvK56cROwd-pO3b0BWpzX7dwZe_y7Rxgg0j.png)
 - Se recomienda ir a network y cambiar "No throttling" por "Slow 3G", así se aprecian los cambios de estado en la propia página web (sin necesidad de ver los logs en la consola).
+
+## Lesson 14
+
+- Se agregó un nuevo endpoint en back para recibir información de un producto.
+
+```
+  app.get('/api/products/slug/:slug', (req, res) => {
+    const product = data.products.find((x) => x.slug == req.params.slug);
+    if (product) {
+      res.send(product);
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
+  });
+```
+
+- To change title of the webpage easily from any react component, we can use this package: npm install react-helmet-async.
+  Then, make sure you have your index.js like this:
+
+```
+  <HelmetProvider>
+    <App />
+  </HelmetProvider>
+```
+
+- After that, to change the title from any component, just do this:
+
+```
+  <Helmet>
+    <title>The title you want...</title>
+  </Helmet>
+```
