@@ -12,7 +12,7 @@ body {
 }
 
 main {
-  flex: 1;
+  flex: 1; /*Aprovecha todo el espacio entre el header y footer*/
 }
 
 .products {
@@ -21,18 +21,18 @@ main {
   justify-content: center;
 }
 
-.product {
-  border: 1px #404040 solid;
-  margin: 1rem;
+.btn-primary {
+  background-color: #ffc000;
+  color: #000000;
 }
 
 .rating span {
   color: #ffc000;
 }
 
-.btn-primary {
-  background-color: #ffc000;
-  color: black;
+.product {
+  border: 1px #404040 solid;
+  margin: 1rem;
 }
 
 .product img {
@@ -42,6 +42,10 @@ main {
 
 .product-info {
   padding: 1rem;
+}
+
+#product-info-price {
+  font-weight: bold;
 }
 
 .img-large {
