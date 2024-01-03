@@ -1,17 +1,12 @@
-import axios from "axios";
 import { useContext, useEffect, useReducer } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
-import Badge from "react-bootstrap/Badge";
-import Button from "react-bootstrap/Button";
+import axios from "axios";
+import { Badge, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import Rating from "../components/Rating";
 import { Helmet } from "react-helmet-async";
+import { getError } from "../utils";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
-import { getError } from "../utils";
 import { Store } from "../Store";
 
 const reducer = (state, action) => {
@@ -27,16 +22,19 @@ const reducer = (state, action) => {
   }
 };
 
+const initialState = {
+  product: {},
+  loading: true,
+  error: "",
+};
+
 const ProductScreen = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { slug } = params;
 
-  const [{ loading, error, product }, dispatch] = useReducer(reducer, {
-    product: {},
-    loading: true,
-    error: "",
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { product, loading, error } = state;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,18 +49,22 @@ const ProductScreen = () => {
     fetchData();
   }, [slug]);
 
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart } = state;
+  const { state: ctxState, dispatch: ctxDispatch } = useContext(Store);
+  const { cart } = ctxState;
+
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((p) => p._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
-    if (data.countInStock < quantity) {
+    if (quantity > data.countInStock) {
       window.alert("Sorry. Product is out of stock");
       return;
     }
 
-    ctxDispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+    ctxDispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...product, quantity },
+    });
     navigate("/cart");
   };
 
