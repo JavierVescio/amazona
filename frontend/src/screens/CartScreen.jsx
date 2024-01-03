@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { Store } from "../Store";
-import { Helmet } from "react-helmet-async";
-import { Col, ListGroup, Row, Button, Card } from "react-bootstrap";
-import MessageBox from "../components/MessageBox";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
+import { Helmet } from "react-helmet-async";
+import MessageBox from "../components/MessageBox";
+import { Store } from "../Store";
 
 export default function CartScreen() {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function CartScreen() {
   };
 
   const removeProductHandler = (product) => {
-    ctxDispatch({ type: "CART_ADD_ITEM", payload: product });
+    ctxDispatch({ type: "CART_REMOVE_ITEM", payload: product });
   }
 
   const checkoutHandler = () => {
