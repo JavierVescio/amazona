@@ -675,26 +675,30 @@ const reducer = (state, action) => {
       return state;
   }
 };
-            - Hay 3 action.type posibles:
-                - FETCH_REQUEST: se hace el dispatch de este action.type justo antes de hacer un GET a la API del server para que traiga los productos. Lo único que hace este action.type es cambiar el estado de loading a True, para que el componente sepa que se van a estar cargando productos y que una operación asincrónica está en camino.
-                - FETCH_SUCCESS: se hace el dispatch cuando ya se obtuvieron con éxito los productos desde el servidor. El loading pasa a valer Falso y products pasa a valer lo que tiene el action.payload.
-                - FETCH_FAIL: se hace el dispatch cuando el server respondió con un mensaje de error. En error se guardar el payload y, obviamente, loading pasa a valer Falso.
-            - Apenas comienza la definición del componente, encontramos esto:
-            - const [state, dispatch] = useReducer(reducer, initialState);
-  const { products, loading, error } = state;
+```
 
-  useEffect(() => {
-    const fetchData = async () => {
-      dispatch({ type: "FETCH_REQUEST" });
-      try {
-        const result = await axios.get("/api/products");
-        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
-      } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
-      }
-    };
-    fetchData();
-  }, []);
+Hay 3 action.type posibles:
+    - FETCH_REQUEST: se hace el dispatch de este action.type justo antes de hacer un GET a la API del server para que traiga los productos. Lo único que hace este action.type es cambiar el estado de loading a True, para que el componente sepa que se van a estar cargando productos y que una operación asincrónica está en camino.
+    - FETCH_SUCCESS: se hace el dispatch cuando ya se obtuvieron con éxito los productos desde el servidor. El loading pasa a valer Falso y products pasa a valer lo que tiene el action.payload.
+    - FETCH_FAIL: se hace el dispatch cuando el server respondió con un mensaje de error. En error se guardar el payload y, obviamente, loading pasa a valer Falso.
+
+Apenas comienza la definición del componente, encontramos esto:
+```jsx  
+const [state, dispatch] = useReducer(reducer, initialState);
+const { products, loading, error } = state;
+
+useEffect(() => {
+  const fetchData = async () => {
+    dispatch({ type: "FETCH_REQUEST" });
+    try {
+      const result = await axios.get("/api/products");
+      dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+    } catch (err) {
+      dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+    }
+  };
+  fetchData();
+}, []);
 ```
 
 Se indica que se hará uso de un reducer con la función reducer e initialState que vimos antes. Además, se hace un destructuring del state para tener a mano products, loading y error, que serán usados en el componente.
